@@ -12,7 +12,7 @@
 
 <body>
     <script>
-        alert(screen.width*screen.height)
+        //alert(screen.width*screen.height)
         let palette = [
             new THREE.Color("#808080"),
             new THREE.Color("#808080"),
@@ -121,7 +121,7 @@
             garden.forEach((grass) => {
                 const grassScreenPos = grass.pos.clone().project(camera);
                 const distX = Math.abs(grassScreenPos.x - mouseX);
-                const distY = Math.abs(grassScreenPos.y - mouseY) / 2;
+                const distY = Math.abs(grassScreenPos.y - mouseY) / (screen.width / screen.height);
                 const distance = Math.sqrt(distX * distX + distY * distY);
 
                 if (distance < 0.05) {
