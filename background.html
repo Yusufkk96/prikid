@@ -108,6 +108,7 @@
         );
 
         let nearbyGrass = [];
+        let farGrass = [];
 
         window.addEventListener("mousemove", onMouseMove, false);
 
@@ -145,6 +146,9 @@
 			farGrass.forEach((grass) => {
                 grass.update(false);
             });
+
+            nearbyGrass = [];
+            farGrass = garden;
 
             linesGeometry.setAttribute(
                 "position",
