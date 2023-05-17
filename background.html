@@ -111,7 +111,7 @@
             new THREE.Float32BufferAttribute(colors, 3)
         );
 
-        let isMouseNearGrass = false;
+        let nearbyGrass = [];
 
         window.addEventListener("mousemove", onMouseMove, false);
 
@@ -119,16 +119,16 @@
             const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
             const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
 
-            isMouseNearGrass = false;
+            nearbyGrass = [];
 
             garden.forEach((grass) => {
                 const grassScreenPos = grass.pos.clone().project(camera);
                 const distX = Math.abs(grassScreenPos.x - mouseX);
                 const distY = Math.abs(grassScreenPos.y - mouseY);
+                const distance = Math.sqrt(distX * distX + distY * distY);
 
-                if (distX < 0.1 && distY < 0.1) {
-                    isMouseNearGrass = true;
-                    grass.update();
+                if (distance < 0.1) {
+                    nearbyGrass.push(grass);
                 }
             });
         }
@@ -137,15 +137,15 @@
             requestAnimationFrame(render);
 
             points = [];
-            if (isMouseNearGrass) {
-                garden.forEach((grass) => {
-                    grass.update(a * 0.0003);
-                });
-                linesGeometry.setAttribute(
-                    "position",
-                    new THREE.Float32BufferAttribute(points, 3)
-                );
-            }
+
+            nearbyGrass.forEach((grass) => {
+                grass.update(a * 0.0003);
+            });
+
+            linesGeometry.setAttribute(
+                "position",
+                new THREE.Float32BufferAttribute(points, 3)
+            );
 
             camera.lookAt(0, 0, 0);
             renderer.render(scene, camera);
