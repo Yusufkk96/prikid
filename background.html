@@ -83,7 +83,10 @@
             }
 
             update(a) {
-                const angle = Math.random() / 20;
+				let angle = 0;
+				if (a) {
+					angle = Math.random() / 20;
+				}
                 const u = Math.cos(this.theta + (angle + 0.01));
                 this.pos2.x =
                     this.scale *
@@ -120,6 +123,7 @@
             const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
 
             nearbyGrass = [];
+			farGrass = [];
 
             garden.forEach((grass) => {
                 const grassScreenPos = grass.pos.clone().project(camera);
@@ -130,6 +134,9 @@
                 if (distance < 0.1) {
                     nearbyGrass.push(grass);
                 }
+				else {
+					farGrass.push(grass);
+				}
             });
         }
 
@@ -139,7 +146,11 @@
             points = [];
 
             nearbyGrass.forEach((grass) => {
-                grass.update(a * 0.0003);
+                grass.update(true);
+            });
+			
+			farGrass.forEach((grass) => {
+                grass.update(false);
             });
 
             linesGeometry.setAttribute(
