@@ -14,9 +14,9 @@
     <script>
         //alert(screen.width*screen.height)
         let palette = [
-            new THREE.Color("#808080"),
-            new THREE.Color("#808080"),
-            new THREE.Color("#808080"),
+            new THREE.Color("#000000"),
+            new THREE.Color("#262626"),
+            new THREE.Color("#595959"),
             new THREE.Color("#808080")
         ];
 
@@ -39,7 +39,7 @@
 
         camera.position.x = 0;
         camera.position.y = 0;
-        camera.position.z = 12;
+        camera.position.z = 120;
 
         const linesMaterial = new THREE.LineBasicMaterial({
             color: 0xffffff,
@@ -57,16 +57,20 @@
         const line = new THREE.LineSegments(linesGeometry, linesMaterial);
         group.add(line);
 
+        function getPatternPoints() {
+            
+        }
+
         const garden = [];
         class Grass {
             constructor() {
-                let x = 5.5 * (2 * Math.random() - 1)
-                let y = 5.5 * (2 * Math.random() - 1)
-                let z = 0
+                let x = 35.5 * (2 * Math.random() - 1)
+                let y = 35.5 * (2 * Math.random() - 1)
+                let z = 1
                 this.pos = new THREE.Vector3(x, y, z);
                 this.pos2 = new THREE.Vector3();
                 this.scale = 5.1 + Math.random() * 0.8;
-                this.colorIndex = Math.floor(Math.abs(1));
+                this.colorIndex = Math.floor(Math.random() * 4);
                 colors.push(
                     palette[this.colorIndex].r,
                     palette[this.colorIndex].g,
@@ -82,10 +86,12 @@
 				this.pos2.x = this.pos.x + Math.random()
                 this.pos2.y = this.pos.y + Math.random()
                 this.pos2.z = 0
+
+                this.nearby = false
             }
 
-            update(a) {
-				if (a) {
+            update() {
+				if (this.nearby) {
 					this.pos2.x = this.pos.x + Math.random()
 					this.pos2.y = this.pos.y + Math.random()
 					this.pos2.z = 0
@@ -93,6 +99,8 @@
 
                 points.push(this.pos.x, this.pos.y, this.pos.z);
                 points.push(this.pos2.x, this.pos2.y, this.pos2.z);
+
+                this.nearby = false
             }
         }
 
@@ -107,17 +115,11 @@
             new THREE.Float32BufferAttribute(colors, 3)
         );
 
-        let nearbyGrass = [];
-        let farGrass = [];
-
         window.addEventListener("mousemove", onMouseMove, false);
 
         function onMouseMove(event) {
             const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
             const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            nearbyGrass = [];
-			farGrass = [];
 
             garden.forEach((grass) => {
                 const grassScreenPos = grass.pos.clone().project(camera);
@@ -125,11 +127,11 @@
                 const distY = Math.abs(grassScreenPos.y - mouseY) / (screen.width / screen.height);
                 const distance = Math.sqrt(distX * distX + distY * distY);
 
-                if (distance < 0.05) {
-                    nearbyGrass.push(grass);
+                if (distance < 0.01) {
+                    grass.nearby = true;
                 }
 				else {
-					farGrass.push(grass);
+					grass.nearby = false;
 				}
             });
         }
@@ -139,16 +141,9 @@
 
             points = [];
             
-            nearbyGrass.forEach((grass) => {
-                grass.update(true);
+            garden.forEach((grass) => {
+                grass.update();
             });
-			
-			farGrass.forEach((grass) => {
-                grass.update(false);
-            });
-
-            nearbyGrass = [];
-            farGrass = garden;
 
             linesGeometry.setAttribute(
                 "position",
