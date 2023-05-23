@@ -57,15 +57,77 @@
         const line = new THREE.LineSegments(linesGeometry, linesMaterial);
         group.add(line);
 
-        function getPatternPoints() {
+        // Define the coordinates for the capital "P" shape
+        const pCoordinates = [
+        { x: -17.75, y: 17.75 },
+        { x: -17.75, y: -17.75 },
+        { x: 0, y: -17.75 },
+        { x: 0, y: -14.5 },
+        { x: -8, y: -14.5 },
+        { x: -8, y: -5.5 },
+        { x: -13.75, y: -5.5 },
+        { x: -13.75, y: 0 },
+        { x: -8, y: 0 },
+        { x: -8, y: 17.75 },
+        { x: -17.75, y: 17.75 }
+        ];
+
+        const scale = 1;
+
+        function isInsideP(x, y) {
+            if (x < 8 * scale && x > - 8 * scale && y < 64 * scale && y > -64 * scale) {
+                return true;
+            }
+
+            const hemispheres = [1, -1];
+            for (var i = 0; i < hemispheres.length; i++) {
+                xHem = x * hemispheres[i];
+                yHem = y * hemispheres[i];
+                if (xHem > 8 * scale && yHem > 0 * scale) {
+                    if (xHem < 32 * scale && (yHem > 48 * scale || yHem < 16 * scale)) {
+                        return true;
+                    }
+
+                    if (xHem > 32 * scale && (yHem > 16 * scale && yHem < 48 * scale)) {
+                        return true;
+                    }
+
+                    if (xHem > 32 * scale && yHem > 48 * scale) {
+                        if (Math.pow(xHem - 32 * scale, 2) + Math.pow(yHem - 48 * scale, 2) < Math.pow(16 * scale, 2)) {
+                            return true;
+                        }
+                    }
+
+                    if (xHem > 32 * scale && yHem < 16 * scale) {
+                        if (Math.pow(xHem - 32 * scale, 2) + Math.pow(yHem - 16 * scale, 2) < Math.pow(16 * scale, 2)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        function generateRandomP() {
+            let x, y;
+            do {
+                x = (-48 + Math.random() * 48 * 2) * scale;
+                y = (-64 + Math.random() * 64 * 2) * scale;
+            } while (!isInsideP(x, y));
             
+            return { x, y };
         }
 
         const garden = [];
         class Grass {
             constructor() {
-                let x = 35.5 * (2 * Math.random() - 1)
-                let y = 35.5 * (2 * Math.random() - 1)
+                //let x = 35.5 * (2 * Math.random() - 1)
+                //let y = 35.5 * (2 * Math.random() - 1)
+                const randomCoords = generateRandomP();
+                let x = randomCoords.x;
+                let y = randomCoords.y;
+
                 let z = 1
                 this.pos = new THREE.Vector3(x, y, z);
                 this.pos2 = new THREE.Vector3();
@@ -105,7 +167,7 @@
         }
 
         let colors = [];
-        for (let i = 0; i < ((screen.width*screen.height)/90); i++) {
+        for (let i = 0; i < ((screen.width*screen.height) / 40); i++) {
             const g = new Grass();
             garden.push(g);
         }
@@ -127,7 +189,7 @@
                 const distY = Math.abs(grassScreenPos.y - mouseY) / (screen.width / screen.height);
                 const distance = Math.sqrt(distX * distX + distY * distY);
 
-                if (distance < 0.01) {
+                if (distance < 0.02) {
                     grass.nearby = true;
                 }
 				else {
