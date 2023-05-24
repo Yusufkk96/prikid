@@ -57,25 +57,32 @@
         const line = new THREE.LineSegments(linesGeometry, linesMaterial);
         group.add(line);
 
-        // Define the coordinates for the capital "P" shape
-        const pCoordinates = [
-        { x: -17.75, y: 17.75 },
-        { x: -17.75, y: -17.75 },
-        { x: 0, y: -17.75 },
-        { x: 0, y: -14.5 },
-        { x: -8, y: -14.5 },
-        { x: -8, y: -5.5 },
-        { x: -13.75, y: -5.5 },
-        { x: -13.75, y: 0 },
-        { x: -8, y: 0 },
-        { x: -8, y: 17.75 },
-        { x: -17.75, y: 17.75 }
-        ];
+        const scale = 0.15;
 
-        const scale = 1;
+        const degrees = 20;
+        const radians = (degrees * Math.PI) / 180;
 
-        function isInsideP(x, y) {
-            if (x < 8 * scale && x > - 8 * scale && y < 64 * scale && y > -64 * scale) {
+        const wOrig = 48;
+        const hOrig = 64;
+        const w = Math.abs(wOrig * Math.cos(radians)) + Math.abs(hOrig * Math.sin(radians))
+        const h = Math.abs(wOrig * Math.sin(radians)) + Math.abs(hOrig * Math.cos(radians))
+
+        function rotateCoordinates(x, y) {
+            var cosTheta = Math.cos(radians);
+            var sinTheta = Math.sin(radians);
+
+            var newX = x * cosTheta - y * sinTheta;
+            var newY = x * sinTheta + y * cosTheta;
+
+            return { x: newX, y: newY };
+        }
+
+        function isInsideP(xOrig, yOrig) {
+            const rotatedCoordinates = rotateCoordinates(xOrig, yOrig);
+            let x = rotatedCoordinates.x;
+            let y = rotatedCoordinates.y
+
+            if (x < (wOrig / 6) * scale && x > -(wOrig / 6) * scale && y < hOrig * scale && y > -hOrig * scale) {
                 return true;
             }
 
@@ -83,23 +90,23 @@
             for (var i = 0; i < hemispheres.length; i++) {
                 xHem = x * hemispheres[i];
                 yHem = y * hemispheres[i];
-                if (xHem > 8 * scale && yHem > 0 * scale) {
-                    if (xHem < 32 * scale && (yHem > 48 * scale || yHem < 16 * scale)) {
+                if (xHem > (wOrig / 6) * scale && yHem > 0 * scale && xHem < wOrig * scale && yHem < hOrig * scale) {
+                    if (xHem < (wOrig * 2 / 3) * scale && (yHem > (hOrig * 3 / 4) * scale || yHem < (hOrig / 4) * scale)) {
                         return true;
                     }
 
-                    if (xHem > 32 * scale && (yHem > 16 * scale && yHem < 48 * scale)) {
+                    if (xHem > (wOrig * 2 / 3) * scale && (yHem > (hOrig / 4) * scale && yHem < (hOrig * 3 / 4) * scale)) {
                         return true;
                     }
 
-                    if (xHem > 32 * scale && yHem > 48 * scale) {
-                        if (Math.pow(xHem - 32 * scale, 2) + Math.pow(yHem - 48 * scale, 2) < Math.pow(16 * scale, 2)) {
+                    if (xHem > (wOrig * 2 / 3) * scale && yHem > (hOrig * 3 / 4) * scale) {
+                        if (Math.pow(xHem - (wOrig * 2 / 3) * scale, 2) + Math.pow(yHem - (hOrig * 3 / 4) * scale, 2) < Math.pow((wOrig / 3) * scale, 2)) {
                             return true;
                         }
                     }
 
                     if (xHem > 32 * scale && yHem < 16 * scale) {
-                        if (Math.pow(xHem - 32 * scale, 2) + Math.pow(yHem - 16 * scale, 2) < Math.pow(16 * scale, 2)) {
+                        if (Math.pow(xHem - (wOrig * 2 / 3) * scale, 2) + Math.pow(yHem - (hOrig / 4) * scale, 2) < Math.pow((wOrig / 3) * scale, 2)) {
                             return true;
                         }
                     }
@@ -112,8 +119,8 @@
         function generateRandomP() {
             let x, y;
             do {
-                x = (-48 + Math.random() * 48 * 2) * scale;
-                y = (-64 + Math.random() * 64 * 2) * scale;
+                x = (-w + Math.random() * w * 2) * scale / Math.cos(radians);
+                y = (-h + Math.random() * h * 2) * scale;
             } while (!isInsideP(x, y));
             
             return { x, y };
@@ -167,7 +174,7 @@
         }
 
         let colors = [];
-        for (let i = 0; i < ((screen.width*screen.height) / 40); i++) {
+        for (let i = 0; i < ((screen.width*screen.height) / 40 * scale); i++) {
             const g = new Grass();
             garden.push(g);
         }
