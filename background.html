@@ -135,6 +135,12 @@
                 let x = randomCoords.x;
                 let y = randomCoords.y;
 
+                let xOffset = (Math.floor(Math.random() * 20) - 10) * w * scale * 2;
+                let yOffset = (Math.floor(Math.random() * 10) - 5) * h * scale * 2;
+
+                x += xOffset;
+                y += yOffset;
+
                 let z = 1
                 this.pos = new THREE.Vector3(x, y, z);
                 this.pos2 = new THREE.Vector3();
@@ -174,7 +180,7 @@
         }
 
         let colors = [];
-        for (let i = 0; i < ((screen.width*screen.height) / 40 * scale); i++) {
+        for (let i = 0; i < ((screen.width*screen.height) * scale); i++) {
             const g = new Grass();
             garden.push(g);
         }
