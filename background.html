@@ -57,7 +57,7 @@
         const line = new THREE.LineSegments(linesGeometry, linesMaterial);
         group.add(line);
 
-        const scale = 0.15;
+        const scale = 0.5;
 
         const degrees = 20;
         const radians = (degrees * Math.PI) / 180;
@@ -119,7 +119,7 @@
         function generateRandomP() {
             let x, y;
             do {
-                x = (-w + Math.random() * w * 2) * scale / Math.cos(radians);
+                x = (-w + Math.random() * w * 2) * scale;
                 y = (-h + Math.random() * h * 2) * scale;
             } while (!isInsideP(x, y));
             
@@ -135,8 +135,8 @@
                 let x = randomCoords.x;
                 let y = randomCoords.y;
 
-                let xOffset = (Math.floor(Math.random() * 20) - 10) * w * scale * 2;
-                let yOffset = (Math.floor(Math.random() * 10) - 5) * h * scale * 2;
+                let xOffset = (Math.floor(Math.random() * 3) - 1) * w * scale * 4;
+                let yOffset = (Math.floor(Math.random() * 2) - 0.5) * h * scale * 2;
 
                 x += xOffset;
                 y += yOffset;
@@ -180,7 +180,7 @@
         }
 
         let colors = [];
-        for (let i = 0; i < ((screen.width*screen.height) * scale); i++) {
+        for (let i = 0; i < ((screen.width*screen.height) * scale / 10); i++) {
             const g = new Grass();
             garden.push(g);
         }
