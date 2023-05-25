@@ -128,7 +128,6 @@
             return { x, y };
         }
 
-        const garden = [];
         class Grass {
             constructor() {
                 //let x = 35.5 * (2 * Math.random() - 1)
@@ -166,29 +165,22 @@
                 this.pos2.y += Math.random();
                 // this.pos2.z = hairLength;
 
-                this.nearby = false
-            }
-
-            update() {
-				if (this.nearby) {
-                    let direction = camera.position.clone().sub(this.pos).normalize(); // Calculate the direction vector from this.pos to camera.position
-                    this.pos2.copy(this.pos).addScaledVector(direction, hairLength); // Set the position of this.pos2 by adding the scaled direction vector
-
-					this.pos2.x += Math.random()
-					this.pos2.y +=  Math.random()
-				}
-
                 points.push(this.pos.x, this.pos.y, this.pos.z);
                 points.push(this.pos2.x, this.pos2.y, this.pos2.z);
-
-                this.nearby = false
             }
+        }
+
+        function update(i, pos, mouseX, mouseY) {
+            let direction = camera.position.clone().sub(pos).normalize(); // Calculate the direction vector from this.pos to camera.position
+            pos.addScaledVector(direction, hairLength); // Set the position of point by adding the scaled direction vector
+
+            points[i+3] = pos.x + Math.random()
+            points[i+4] = pos.y + Math.random()
         }
 
         let colors = [];
         for (let i = 0; i < ((screen.width*screen.height) * scale / 10); i++) {
             const g = new Grass();
-            garden.push(g);
         }
 
         linesGeometry.setAttribute(
@@ -202,29 +194,21 @@
             const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
             const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
 
-            garden.forEach((grass) => {
-                const grassScreenPos = grass.pos.clone().project(camera);
+            for (var i = 0; i < points.length; i += 6) {
+                let pos = new THREE.Vector3(points[i], points[i+1], points[i+2])
+                const grassScreenPos = pos.clone().project(camera);
                 const distX = Math.abs(grassScreenPos.x - mouseX);
                 const distY = Math.abs(grassScreenPos.y - mouseY) / (screen.width / screen.height);
                 const distance = Math.sqrt(distX * distX + distY * distY);
 
                 if (distance < 0.02) {
-                    grass.nearby = true;
+                    update(i, pos, mouseX, mouseY);
                 }
-				else {
-					grass.nearby = false;
-				}
-            });
+            }
         }
 
         function render(a) {
             requestAnimationFrame(render);
-
-            points = [];
-            
-            garden.forEach((grass) => {
-                grass.update();
-            });
 
             linesGeometry.setAttribute(
                 "position",
