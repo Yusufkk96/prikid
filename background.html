@@ -20,6 +20,8 @@
             new THREE.Color("#808080")
         ];
 
+        const hairLength = 10;
+
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(
             75,
@@ -44,7 +46,7 @@
         const linesMaterial = new THREE.LineBasicMaterial({
             color: 0xffffff,
             transparent: true,
-            opacity: 0.2,
+            opacity: 0.4,
             blending: THREE.AdditiveBlending,
             vertexColors: true
         });
@@ -141,10 +143,8 @@
                 x += xOffset;
                 y += yOffset;
 
-                let z = 1
-                this.pos = new THREE.Vector3(x, y, z);
+                this.pos = new THREE.Vector3(x, y, 0);
                 this.pos2 = new THREE.Vector3();
-                this.scale = 5.1 + Math.random() * 0.8;
                 this.colorIndex = Math.floor(Math.random() * 4);
                 colors.push(
                     palette[this.colorIndex].r,
@@ -158,18 +158,24 @@
                     palette[this.colorIndex % 4].b
                 );
 				
-				this.pos2.x = this.pos.x + Math.random()
-                this.pos2.y = this.pos.y + Math.random()
-                this.pos2.z = 0
+                let direction = camera.position.clone().sub(this.pos).normalize(); // Calculate the direction vector from this.pos to camera.position
+
+                this.pos2.copy(this.pos).addScaledVector(direction, hairLength); // Set the position of this.pos2 by adding the scaled direction vector
+
+                this.pos2.x += Math.random();
+                this.pos2.y += Math.random();
+                // this.pos2.z = hairLength;
 
                 this.nearby = false
             }
 
             update() {
 				if (this.nearby) {
-					this.pos2.x = this.pos.x + Math.random()
-					this.pos2.y = this.pos.y + Math.random()
-					this.pos2.z = 0
+                    let direction = camera.position.clone().sub(this.pos).normalize(); // Calculate the direction vector from this.pos to camera.position
+                    this.pos2.copy(this.pos).addScaledVector(direction, hairLength); // Set the position of this.pos2 by adding the scaled direction vector
+
+					this.pos2.x += Math.random()
+					this.pos2.y +=  Math.random()
 				}
 
                 points.push(this.pos.x, this.pos.y, this.pos.z);
