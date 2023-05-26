@@ -170,12 +170,12 @@
             }
         }
 
-        function update(i, pos, mouseX, mouseY) {
+        function update(i, pos, grassScreenPos, mouseX, mouseY) {
             let direction = camera.position.clone().sub(pos).normalize(); // Calculate the direction vector from this.pos to camera.position
             pos.addScaledVector(direction, hairLength); // Set the position of point by adding the scaled direction vector
 
-            points[i+3] = pos.x + Math.random()
-            points[i+4] = pos.y + Math.random()
+            points[i+3] = pos.x + Math.random() + (grassScreenPos.x - mouseX) * 20
+            points[i+4] = pos.y + Math.random() + (grassScreenPos.y - mouseY) * 20
         }
 
         let colors = [];
@@ -202,7 +202,7 @@
                 const distance = Math.sqrt(distX * distX + distY * distY);
 
                 if (distance < 0.02) {
-                    update(i, pos, mouseX, mouseY);
+                    update(i, pos, grassScreenPos, mouseX, mouseY);
                 }
             }
         }
