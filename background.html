@@ -13,16 +13,16 @@
     <script>
         //alert(screen.width*screen.height)
         let palette = [
-            new THREE.Color("#404040"),
             new THREE.Color("#303030"),
             new THREE.Color("#202020"),
-            new THREE.Color("#101010")
+            new THREE.Color("#101010"),
+            new THREE.Color("black")
         ];
 
         const hairLength = 10;
 
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color("#606060")
+        scene.background = new THREE.Color("#404040")
         const camera = new THREE.PerspectiveCamera(
             75,
             window.innerWidth / window.innerHeight,
@@ -55,9 +55,9 @@
         const line = new THREE.LineSegments(linesGeometry, linesMaterial);
         group.add(line);
 
-        const scale = 0.1;
+        const scale = 0.15;
 
-        const degrees = 20;
+        const degrees = -15;
         const radians = (degrees * Math.PI) / 180;
 
         const wOrig = 48;
@@ -124,8 +124,8 @@
             return { x, y };
         }
 
-        const xCount = 40;
-        const yCount = 24;
+        const xCount = 36;
+        const yCount = 10;
 
         class Grass {
             constructor() {
@@ -135,8 +135,8 @@
                 let x = randomCoords.x;
                 let y = randomCoords.y;
 
-                let xOffset = (Math.floor(Math.random() * xCount) - (xCount / 2 - 0.5)) * w * scale * 2;
-                let yOffset = (Math.floor(Math.random() * yCount) - (yCount / 2 - 0.5)) * h * scale * 1.6;
+                let xOffset = (Math.floor(Math.random() * xCount) - (xCount / 2 - 0.5)) * w * scale * 1.05;
+                let yOffset = (Math.floor(Math.random() * yCount) - (yCount / 2 - 0.5)) * h * scale * 1.95;
 
                 x += xOffset;
                 y += yOffset;
