@@ -3,7 +3,6 @@
     <script src="https://cdn.jsdelivr.net/npm/simplex-noise@4.0.0/dist/simplex-noise.min.js"></script>
     <style>
         body {
-            background: #000;
             overflow: hidden;
             margin: 0;
         }
@@ -14,15 +13,16 @@
     <script>
         //alert(screen.width*screen.height)
         let palette = [
-            new THREE.Color("#000000"),
-            new THREE.Color("#262626"),
-            new THREE.Color("#595959"),
-            new THREE.Color("#808080")
+            new THREE.Color("#404040"),
+            new THREE.Color("#303030"),
+            new THREE.Color("#202020"),
+            new THREE.Color("#101010")
         ];
 
         const hairLength = 10;
 
         const scene = new THREE.Scene();
+        scene.background = new THREE.Color("#606060")
         const camera = new THREE.PerspectiveCamera(
             75,
             window.innerWidth / window.innerHeight,
@@ -44,10 +44,6 @@
         camera.position.z = 120;
 
         const linesMaterial = new THREE.LineBasicMaterial({
-            color: 0xffffff,
-            transparent: true,
-            opacity: 0.4,
-            blending: THREE.AdditiveBlending,
             vertexColors: true
         });
 
@@ -59,7 +55,7 @@
         const line = new THREE.LineSegments(linesGeometry, linesMaterial);
         group.add(line);
 
-        const scale = 0.08;
+        const scale = 0.1;
 
         const degrees = 20;
         const radians = (degrees * Math.PI) / 180;
@@ -139,7 +135,7 @@
                 let x = randomCoords.x;
                 let y = randomCoords.y;
 
-                let xOffset = (Math.floor(Math.random() * xCount) - (xCount / 2 - 0.5)) * w * scale * 3;
+                let xOffset = (Math.floor(Math.random() * xCount) - (xCount / 2 - 0.5)) * w * scale * 2;
                 let yOffset = (Math.floor(Math.random() * yCount) - (yCount / 2 - 0.5)) * h * scale * 1.6;
 
                 x += xOffset;
@@ -153,7 +149,7 @@
                     palette[this.colorIndex].g,
                     palette[this.colorIndex].b
                 );
-                this.colorIndex += 1;
+                //this.colorIndex += 1;
                 colors.push(
                     palette[this.colorIndex % 4].r,
                     palette[this.colorIndex % 4].g,
