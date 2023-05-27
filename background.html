@@ -11,6 +11,90 @@
 
 <body>
     <script>
+        function compareNumbers(a, b) {
+            return a - b;
+        }
+
+        class RangeMap {
+            constructor() {
+                this.map = new Map();
+                this.keys = [];
+            }
+
+            insert(key, value) {
+                this.map.set(key, value);
+                this.keys.push(key);
+            }
+
+            sort() {
+                this.keys.sort(compareNumbers);
+            }
+
+            get(key) {
+                return this.map.get(key);
+            }
+
+            getRange(minKey, maxKey) {
+                const range = [];
+
+                // Find the starting index for the range
+                let startIndex = this.binarySearch(minKey, true);
+                let endIndex = this.binarySearch(maxKey, false);
+                //alert(startIndex)
+                //alert(endIndex)
+                if (startIndex === -1) {
+                    startIndex = 0; // If minKey is not found, start from the first key
+                }
+
+                // Iterate over the keys and collect the key-value pairs within the range
+                for (let i = startIndex; i <= endIndex; i++) {
+                    const key = this.keys[i];
+                    const value = this.map.get(key);
+
+                    range.push(value);
+                }
+
+                return range;
+            }
+
+            binarySearch(key, low) {
+                let left = 0;
+                let right = this.keys.length - 1;
+
+                while (left <= right) {
+                    const mid = Math.floor((left + right) / 2);
+                    if (mid === 0 || mid === this.keys.length - 1) {
+                        return mid;
+                    }
+
+                    const midKey = this.keys[mid];
+
+                    if (midKey === key) {
+                        return mid; // Key found, return the index
+                    } else if (midKey < key) {
+                        if (low && this.keys[mid+1] >= key) {
+                            //alert(mid)
+                            return mid + 1;
+                        }
+
+                        left = mid + 1; // Key is greater, search in the right half
+                    } else {
+                        if (!low && this.keys[mid-1] <= key) {
+                            //alert(mid)
+                            return mid - 1;
+                        }
+
+                        right = mid - 1; // Key is smaller, search in the left half
+                    }
+                }
+
+                return -1; // Key not found
+            }
+        }
+
+        const xRangeMap = new RangeMap();
+        const yRangeMap = new RangeMap();
+
         //alert(screen.width*screen.height)
         let palette = [
             new THREE.Color("#303030"),
@@ -164,45 +248,77 @@
                 this.pos2.y += Math.random();
                 // this.pos2.z = hairLength;
 
+                xRangeMap.insert(this.pos.x, points.length);
+                yRangeMap.insert(this.pos.y, points.length);
+
                 points.push(this.pos.x, this.pos.y, this.pos.z);
                 points.push(this.pos2.x, this.pos2.y, this.pos2.z);
             }
         }
 
-        function update(i, pos, grassScreenPos, mouseX, mouseY) {
+        function update(i, mouseX, mouseY) {
+            let pos = new THREE.Vector3(points[i], points[i+1], points[i+2])
+
+            const distX = Math.abs(pos.x - mouseX);
+            const distY = Math.abs(pos.y - mouseY) / (screen.width / screen.height);
+            const distance = Math.sqrt(distX * distX + distY * distY);
+            if (distance > 3) {
+                return;
+            }
+
             let direction = camera.position.clone().sub(pos).normalize(); // Calculate the direction vector from this.pos to camera.position
             pos.addScaledVector(direction, hairLength); // Set the position of point by adding the scaled direction vector
 
-            points[i+3] = pos.x + Math.random() + (grassScreenPos.x - mouseX) * 20
-            points[i+4] = pos.y + Math.random() + (grassScreenPos.y - mouseY) * 20
+            points[i+3] = pos.x + Math.random() + (pos.x - mouseX) / 20
+            points[i+4] = pos.y + Math.random() + (pos.y - mouseY) / 20
         }
 
         let colors = [];
         for (let i = 0; i < ((screen.width*screen.height) * scale / 10 * (xCount + yCount)); i++) {
             const g = new Grass();
         }
+        xRangeMap.sort();
+        yRangeMap.sort();
 
         linesGeometry.setAttribute(
             "color",
             new THREE.Float32BufferAttribute(colors, 3)
         );
 
+        function getIntersection(list1, list2) {
+            // Create a set to store the elements of the first list
+            const set = new Set(list1);
+
+            // Create an array to store the intersection
+            const intersection = [];
+
+            // Iterate over the second list and check for common elements
+            for (const item of list2) {
+                if (set.has(item)) {
+                    intersection.push(item);
+                }
+            }
+
+            return intersection;
+        }
+
         window.addEventListener("mousemove", onMouseMove, false);
 
+        camera.lookAt(0, 0, 0);
+        let p1 = new THREE.Vector3(1, 1, 0).project(camera);
+        const xMax = 1 / p1.x
+        const yMax = 1 / p1.y
         function onMouseMove(event) {
-            const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-            const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+            const mouseX = (event.clientX / window.innerWidth) * 2 * xMax - xMax;
+            const mouseY = -((event.clientY / window.innerHeight) * 2 * yMax - yMax);
 
-            for (var i = 0; i < points.length; i += 6) {
-                let pos = new THREE.Vector3(points[i], points[i+1], points[i+2])
-                const grassScreenPos = pos.clone().project(camera);
-                const distX = Math.abs(grassScreenPos.x - mouseX);
-                const distY = Math.abs(grassScreenPos.y - mouseY) / (screen.width / screen.height);
-                const distance = Math.sqrt(distX * distX + distY * distY);
+            let xIndices = xRangeMap.getRange(mouseX - 3, mouseX + 3);
+            let yIndices = yRangeMap.getRange(mouseY - 3, mouseY + 3);
 
-                if (distance < 0.02) {
-                    update(i, pos, grassScreenPos, mouseX, mouseY);
-                }
+            let indices = getIntersection(xIndices, yIndices);
+
+            for (const index of indices) {
+                update(index, mouseX, mouseY)
             }
         }
 
