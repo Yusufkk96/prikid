@@ -154,6 +154,7 @@
             return { x: newX, y: newY };
         }
 
+        const hemispheres = [1, -1];
         function isInsideP(xOrig, yOrig) {
             const rotatedCoordinates = rotateCoordinates(xOrig, yOrig);
             let x = rotatedCoordinates.x;
@@ -163,7 +164,6 @@
                 return true;
             }
 
-            const hemispheres = [1, -1];
             for (var i = 0; i < hemispheres.length; i++) {
                 xHem = x * hemispheres[i];
                 yHem = y * hemispheres[i];
