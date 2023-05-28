@@ -126,13 +126,10 @@
             vertexColors: true
         });
 
-        const group = new THREE.Group();
-        scene.add(group);
-
         let points = [];
         const linesGeometry = new THREE.BufferGeometry();
         const line = new THREE.LineSegments(linesGeometry, linesMaterial);
-        group.add(line);
+        scene.add(line);
 
         const scale = 0.4;
 
