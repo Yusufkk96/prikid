@@ -162,8 +162,8 @@
             }
 
             for (var i = 0; i < hemispheres.length; i++) {
-                xHem = x * hemispheres[i];
-                yHem = y * hemispheres[i];
+                let xHem = x * hemispheres[i];
+                let yHem = y * hemispheres[i];
                 if (xHem > (wOrig / 6) * scale && yHem > 0 * scale && xHem < wOrig * scale && yHem < hOrig * scale) {
                     if (xHem < (wOrig * 2 / 3) * scale && (yHem > (hOrig * 3 / 4) * scale || yHem < (hOrig / 4) * scale)) {
                         return true;
