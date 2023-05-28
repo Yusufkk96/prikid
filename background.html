@@ -139,7 +139,7 @@
         const line = new THREE.LineSegments(linesGeometry, linesMaterial);
         group.add(line);
 
-        const scale = 0.15;
+        const scale = 0.4;
 
         const degrees = -15;
         const radians = (degrees * Math.PI) / 180;
@@ -208,8 +208,8 @@
             return { x, y };
         }
 
-        const xCount = 36;
-        const yCount = 10;
+        const xCount = 16;
+        const yCount = 4;
 
         class Grass {
             constructor() {
@@ -219,8 +219,8 @@
                 let x = randomCoords.x;
                 let y = randomCoords.y;
 
-                let xOffset = (Math.floor(Math.random() * xCount) - (xCount / 2 - 0.5)) * w * scale * 1.05;
-                let yOffset = (Math.floor(Math.random() * yCount) - (yCount / 2 - 0.5)) * h * scale * 1.95;
+                let xOffset = (Math.floor(Math.random() * xCount) - (xCount / 2 - 0.5)) * w * scale * 0.98;
+                let yOffset = (Math.floor(Math.random() * yCount) - (yCount / 2 - 0.5)) * h * scale * 1.83;
 
                 x += xOffset;
                 y += yOffset;
@@ -260,7 +260,7 @@
             let pos = new THREE.Vector3(points[i], points[i+1], points[i+2])
 
             const distX = Math.abs(pos.x - mouseX);
-            const distY = Math.abs(pos.y - mouseY) / (screen.width / screen.height);
+            const distY = Math.abs(pos.y - mouseY);
             const distance = Math.sqrt(distX * distX + distY * distY);
             if (distance > 3) {
                 return;
@@ -274,7 +274,7 @@
         }
 
         let colors = [];
-        for (let i = 0; i < ((screen.width*screen.height) * scale / 10 * (xCount + yCount)); i++) {
+        for (let i = 0; i < ((screen.width*screen.height) * scale / 20 * (xCount + yCount)); i++) {
             const g = new Grass();
         }
         xRangeMap.sort();
