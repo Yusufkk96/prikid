@@ -208,8 +208,6 @@
 
         class Grass {
             constructor() {
-                //let x = 35.5 * (2 * Math.random() - 1)
-                //let y = 35.5 * (2 * Math.random() - 1)
                 const randomCoords = generateRandomP();
                 let x = randomCoords.x;
                 let y = randomCoords.y;
@@ -228,7 +226,6 @@
                     palette[this.colorIndex].g,
                     palette[this.colorIndex].b
                 );
-                //this.colorIndex += 1;
                 colors.push(
                     palette[this.colorIndex % 4].r,
                     palette[this.colorIndex % 4].g,
@@ -241,7 +238,6 @@
 
                 this.pos2.x += Math.random();
                 this.pos2.y += Math.random();
-                // this.pos2.z = hairLength;
 
                 xRangeMap.insert(this.pos.x, points.length);
                 yRangeMap.insert(this.pos.y, points.length);
@@ -262,8 +258,8 @@
             }
 
             let direction = camera.position.clone();
-            direction.x += (pos.x - mouseX) * 6;
-            direction.y += (pos.y - mouseY) * 6;
+            direction.x += (pos.x - mouseX) * (5 + pos.x / 20);
+            direction.y += (pos.y - mouseY) * (5 + pos.y / 20);
             direction.sub(pos).normalize(); // Calculate the direction vector from this.pos to camera.position
             pos.addScaledVector(direction, hairLength); // Set the position of point by adding the scaled direction vector
 
