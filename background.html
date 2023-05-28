@@ -258,8 +258,8 @@
             }
 
             let direction = camera.position.clone();
-            direction.x += (pos.x - mouseX) * (5 + pos.x / 20);
-            direction.y += (pos.y - mouseY) * (5 + pos.y / 20);
+            direction.x += (pos.x - mouseX) * (5 + Math.abs(pos.x) / 20);
+            direction.y += (pos.y - mouseY) * (5 + Math.abs(pos.y) / 20);
             direction.sub(pos).normalize(); // Calculate the direction vector from this.pos to camera.position
             pos.addScaledVector(direction, hairLength); // Set the position of point by adding the scaled direction vector
 
