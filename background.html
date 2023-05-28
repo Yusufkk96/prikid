@@ -1,12 +1,6 @@
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simplex-noise@4.0.0/dist/simplex-noise.min.js"></script>
-    <style>
-        body {
-            overflow: hidden;
-            margin: 0;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -106,7 +100,14 @@
         const hairLength = 10;
 
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color("#404040")
+
+        //scene.background = new THREE.Color("#404040");
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.load('https://images.pexels.com/photos/1205301/pexels-photo-1205301.jpeg' , function(texture)
+            {
+             scene.background = texture;  
+            });
+        
         const camera = new THREE.PerspectiveCamera(
             75,
             window.innerWidth / window.innerHeight,
