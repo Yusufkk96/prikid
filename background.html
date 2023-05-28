@@ -266,11 +266,15 @@
                 return;
             }
 
-            let direction = camera.position.clone().sub(pos).normalize(); // Calculate the direction vector from this.pos to camera.position
+            let direction = camera.position.clone();
+            direction.x += (pos.x - mouseX) * 6;
+            direction.y += (pos.y - mouseY) * 6;
+            direction.sub(pos).normalize(); // Calculate the direction vector from this.pos to camera.position
             pos.addScaledVector(direction, hairLength); // Set the position of point by adding the scaled direction vector
 
-            points[i+3] = pos.x + Math.random() + (pos.x - mouseX) / 20
-            points[i+4] = pos.y + Math.random() + (pos.y - mouseY) / 20
+            points[i+3] = pos.x + Math.random();
+            points[i+4] = pos.y + Math.random();
+            points[i+5] = pos.z;
         }
 
         let colors = [];
