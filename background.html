@@ -262,7 +262,7 @@
             const distX = Math.abs(pos.x - mouseX);
             const distY = Math.abs(pos.y - mouseY);
             const distance = Math.sqrt(distX * distX + distY * distY);
-            if (distance > 3) {
+            if (distance > 3 || Math.random() > 0.7) {
                 return;
             }
 
@@ -333,8 +333,7 @@
                 "position",
                 new THREE.Float32BufferAttribute(points, 3)
             );
-
-            camera.lookAt(0, 0, 0);
+            
             renderer.render(scene, camera);
         }
 
