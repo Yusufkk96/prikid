@@ -202,45 +202,43 @@
         const xCount = 16;
         const yCount = 4;
 
-        class Grass {
-            constructor() {
-                const randomCoords = generateRandomP();
-                let x = randomCoords.x;
-                let y = randomCoords.y;
+        function createHair() {
+            const randomCoords = generateRandomP();
+            let x = randomCoords.x;
+            let y = randomCoords.y;
 
-                let xOffset = (Math.floor(Math.random() * xCount) - (xCount / 2 - 0.5)) * w * scale * 0.98;
-                let yOffset = (Math.floor(Math.random() * yCount) - (yCount / 2 - 0.5)) * h * scale * 1.83;
+            let xOffset = (Math.floor(Math.random() * xCount) - (xCount / 2 - 0.5)) * w * scale * 0.98;
+            let yOffset = (Math.floor(Math.random() * yCount) - (yCount / 2 - 0.5)) * h * scale * 1.83;
 
-                x += xOffset;
-                y += yOffset;
+            x += xOffset;
+            y += yOffset;
 
-                this.pos = new THREE.Vector3(x, y, 0);
-                this.pos2 = new THREE.Vector3();
-                this.colorIndex = Math.floor(Math.random() * 4);
-                colors.push(
-                    palette[this.colorIndex].r,
-                    palette[this.colorIndex].g,
-                    palette[this.colorIndex].b
-                );
-                colors.push(
-                    palette[this.colorIndex % 4].r,
-                    palette[this.colorIndex % 4].g,
-                    palette[this.colorIndex % 4].b
-                );
-				
-                let direction = camera.position.clone().sub(this.pos).normalize(); // Calculate the direction vector from this.pos to camera.position
+            this.pos = new THREE.Vector3(x, y, 0);
+            this.pos2 = new THREE.Vector3();
+            this.colorIndex = Math.floor(Math.random() * 4);
+            colors.push(
+                palette[this.colorIndex].r,
+                palette[this.colorIndex].g,
+                palette[this.colorIndex].b
+            );
+            colors.push(
+                palette[this.colorIndex % 4].r,
+                palette[this.colorIndex % 4].g,
+                palette[this.colorIndex % 4].b
+            );
+            
+            let direction = camera.position.clone().sub(this.pos).normalize(); // Calculate the direction vector from this.pos to camera.position
 
-                this.pos2.copy(this.pos).addScaledVector(direction, hairLength); // Set the position of this.pos2 by adding the scaled direction vector
+            this.pos2.copy(this.pos).addScaledVector(direction, hairLength); // Set the position of this.pos2 by adding the scaled direction vector
 
-                this.pos2.x += Math.random();
-                this.pos2.y += Math.random();
+            this.pos2.x += Math.random();
+            this.pos2.y += Math.random();
 
-                xRangeMap.insert(this.pos.x, points.length);
-                yRangeMap.insert(this.pos.y, points.length);
+            xRangeMap.insert(this.pos.x, points.length);
+            yRangeMap.insert(this.pos.y, points.length);
 
-                points.push(this.pos.x, this.pos.y, this.pos.z);
-                points.push(this.pos2.x, this.pos2.y, this.pos2.z);
-            }
+            points.push(this.pos.x, this.pos.y, this.pos.z);
+            points.push(this.pos2.x, this.pos2.y, this.pos2.z);
         }
 
         function update(i, mouseX, mouseY) {
@@ -267,7 +265,7 @@
         let points = [];
         let colors = [];
         for (let i = 0; i < ((screen.width*screen.height) * scale / 20 * (xCount + yCount)); i++) {
-            const g = new Grass();
+            createHair();
         }
         xRangeMap.sort();
         yRangeMap.sort();
