@@ -1,5 +1,6 @@
 <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="THREE.MeshLine.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -126,7 +127,6 @@
             vertexColors: true
         });
 
-        let points = [];
         const linesGeometry = new THREE.BufferGeometry();
         const line = new THREE.LineSegments(linesGeometry, linesMaterial);
         scene.add(line);
@@ -265,6 +265,7 @@
             points[i+5] = pos.z;
         }
 
+        let points = [];
         let colors = [];
         for (let i = 0; i < ((screen.width*screen.height) * scale / 20 * (xCount + yCount)); i++) {
             const g = new Grass();
